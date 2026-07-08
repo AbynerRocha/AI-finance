@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionTypes {
+  BILL
+  SALARY
+  OTHER
+}
+
+enum AccountTypes {
+  MAIN
+  SAVINGS
+  INVESTING
+  OTHER
+}
+
+model User {
+  id       String @unique @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  createdAt DateTime?      @default(now()) @map("created_at")
+  finances  Transactions[]
+  accounts  Account[]
+
+  @@map("tb_users")
+}
+
+model Transactions {
+  id     String @unique @default(nanoid())
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @map("finance_user_id")
+
+  type TransactionTypes
+  date DateTime?        @default(now()) @map("created_at")
+
+  @@index([userId, date])
+  @@map("tb_transactions")
+}
+
+model Account {
+  id     String @unique @default(uuid())
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @map("account_user_id")
+
+  type       AccountTypes
+  currency   String       @default("DOL") @db.Char(3)
+  amountCent BigInt       @default(0)
+  createdAt  DateTime?    @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("tb_accounts")
+}
