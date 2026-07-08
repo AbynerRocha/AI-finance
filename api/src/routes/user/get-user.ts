@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { GetUserRequest } from "../user.routes.js";
 import { getUser } from "../../controllers/user/index.js";
-import { AppError } from "../../utils/error.js";
+import { AppError, UserError } from "../../utils/error.js";
 
 export async function getUserRoute(req: GetUserRequest, res: Response, next: NextFunction) {
     const { id } = req.params
@@ -10,11 +10,7 @@ export async function getUserRoute(req: GetUserRequest, res: Response, next: Nex
         const user = await getUser({ id })
 
         if (user === null) {
-            throw new AppError({
-                statusCode: 404,
-                error: "USER_NOT_FOUND",
-                message: "Utilizador inexistente."
-            })
+            throw UserError.userNotFound()
         }
 
         return res.status(200).json(user)

@@ -2,6 +2,7 @@ node_modules/
 yarn.lock
 
 /src/generated
+/src/dist
 
 .env
 .env.dev

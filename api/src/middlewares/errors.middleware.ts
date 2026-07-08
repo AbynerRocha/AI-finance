@@ -1,13 +1,28 @@
 import type { NextFunction, Request, Response } from "express";
-import { AppError } from "../utils/error.js";
+import { AppError, AuthError } from "../utils/error.js";
+import { ZodError } from "zod";
 
 export function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
-    if(error instanceof AppError) {
+    if(error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+        error = { name: error.name, ...AuthError.invalidToken() }
+    }
+
+    if (error instanceof AppError) {
         return res.status(error.statusCode).json({
             error: error.error,
-            message: error.message
+            message: error.message,
+            issues: error.issues
+        })
+    } else if (error instanceof ZodError) {
+        return res.status(400).json({
+            error: 'VALIDATION_ERROR',
+            issues: error.issues.map(err => ({
+                field: err.path[1],
+                message: err.message
+            }))
         })
     }
+
 
     console.error("❌ Erro critíco: ", error)
 

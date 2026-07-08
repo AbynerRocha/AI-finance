@@ -3,7 +3,8 @@ import { prisma } from "../../lib/prisma/index.js";
 import type { CreateUserSchemaType } from "../../schemas/user.schemas.js";
 import { redisClient } from "../../lib/redis/index.js";
 import type { User } from "../../generated/prisma/client.js";
-import { AppError } from "../../utils/error.js";
+import { AppError, UserError } from "../../utils/error.js";
+import { hashPassword } from "../auth/index.js";
 
 export async function thisUserExists({ id, email }: { id?: string, email?: string }) {
     try {
@@ -33,27 +34,18 @@ export async function thisUserExists({ id, email }: { id?: string, email?: strin
 export async function createUser({ name, email, password }: CreateUserSchemaType['body']) {
     try {
         const exists = await thisUserExists({ email })
-    
-        if(exists) {
-            throw new AppError({
-                statusCode: 409,
-                error: "USER_ALREADY_EXISTS",
-                message: "Esse utilizador já existe.",
-            })
+
+        if (exists) {
+            throw UserError.userExists()
         }
 
-        const hashPassword = await argon2.hash(password, {
-            type: argon2.argon2id,
-            memoryCost: 2 ** 16, // 64mb
-            timeCost: 4,
-            parallelism: 4,
-        })
+        const hashPass = await hashPassword(password)
 
         const createdUser = await prisma.user.create({
             data: {
                 name,
                 email,
-                password: hashPassword
+                password: hashPass
             },
             omit: {
                 password: true
@@ -87,9 +79,6 @@ export async function getUser({ id, email }: { id?: string, email?: string }) {
         const user = await prisma.user.findFirst({
             where: {
                 OR: orConditions
-            },
-            omit: {
-                password: true
             }
         })
 
@@ -101,6 +90,21 @@ export async function getUser({ id, email }: { id?: string, email?: string }) {
     } catch (error) {
         throw error
     }
+}
+
+export async function verifyUserPassword(password: string, email: string) {
+    const user = await prisma.user.findFirst({
+        where: {
+            email
+        },
+        select: {
+            password: true
+        }
+    })
+
+    if(!user) return false
+
+    return argon2.verify(user.password, password)
 }
 
 export async function isThisUserCached({ id, email }: { id: string | undefined, email: string | undefined }) {

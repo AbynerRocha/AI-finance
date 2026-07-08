@@ -35,6 +35,8 @@ model User {
   finances  Transactions[]
   accounts  Account[]
 
+  accessLevel String @default("user")
+
   @@map("tb_users")
 }
 
