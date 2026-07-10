@@ -1,7 +1,7 @@
 import { Router, type Request } from "express";
 import { getUserRoute } from "./user/get-user.js";
 import { createUserRoute } from "./user/create-user.js";
-import { validate } from "../middlewares/validate.middleware.js";
+import { validate } from "../middleware/validate.middleware.js";
 import { createUserSchema, getUserSchema, type CreateUserSchemaType, type GetUserSchemaType } from "../schemas/user.schemas.js";
 
 const router = Router()

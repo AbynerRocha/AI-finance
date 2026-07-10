@@ -5,6 +5,7 @@ import argon2 from 'argon2'
 import { generateAuthToken, type AccessLevel } from "./token/index.js";
 
 export async function loginUser(email: string, password: string) {
+
     let user = await getUser({ email })
     
     if (!user) {
@@ -14,7 +15,7 @@ export async function loginUser(email: string, password: string) {
     const matchPassword = await verifyUserPassword(password, user.email)
 
     if(!matchPassword) {
-        throw AuthError.failedAuth()
+        throw AuthError.invalidCredentials()
     }
 
     const authToken = await generateAuthToken(user.id, user.accessLevel as AccessLevel)

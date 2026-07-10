@@ -11,10 +11,6 @@ export const createUserSchema = z.object({
     })
 })
 
-export type CreateUserSchemaType = z.infer<typeof createUserSchema>
-
-//====================================================
-
 export const getUserSchema = z.object({
     params: z.object({
         id: z.string()
@@ -24,4 +20,5 @@ export const getUserSchema = z.object({
     })
 })
 
+export type CreateUserSchemaType = z.infer<typeof createUserSchema>
 export type GetUserSchemaType = z.infer<typeof getUserSchema>

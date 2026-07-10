@@ -1,10 +1,10 @@
 import argon2 from "argon2";
 import { prisma } from "../../lib/prisma/index.js";
-import type { CreateUserSchemaType } from "../../schemas/user.schemas.js";
 import { redisClient } from "../../lib/redis/index.js";
-import type { User } from "../../generated/prisma/client.js";
-import { AppError, UserError } from "../../utils/error.js";
+import { UserError } from "../../utils/error.js";
 import { hashPassword } from "../auth/index.js";
+import type { CreateUserSchemaType } from "../../schemas/user.schemas.js";
+import type { User } from "../../generated/prisma/client.js";
 
 export async function thisUserExists({ id, email }: { id?: string, email?: string }) {
     try {
@@ -54,9 +54,8 @@ export async function createUser({ name, email, password }: CreateUserSchemaType
 
         saveUserInCache(createdUser)
 
-        return createdUser.id
+        return createdUser
     } catch (error) {
-        console.error(error)
         throw error
     }
 }
@@ -79,6 +78,9 @@ export async function getUser({ id, email }: { id?: string, email?: string }) {
         const user = await prisma.user.findFirst({
             where: {
                 OR: orConditions
+            },
+            omit: {
+                password: true
             }
         })
 

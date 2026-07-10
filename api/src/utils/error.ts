@@ -1,6 +1,6 @@
 type AppErrorType = {
     message: string,
-    error: string,
+    name: string,
     statusCode: number,
     issues?: {
         target?: string
@@ -10,17 +10,17 @@ type AppErrorType = {
 
 export class AppError {
     public readonly message: string;
-    public readonly error: string;
+    public readonly name: string;
     public readonly statusCode: number;
     public readonly issues?: {
         target?: string
         message?: string
     }[];
 
-    constructor({ message, error, statusCode, issues }: AppErrorType) {
+    constructor({ message, name, statusCode, issues }: AppErrorType) {
         this.statusCode = statusCode
         this.message = message
-        this.error = error
+        this.name = name
 
         if(issues) this.issues = issues 
     }
@@ -34,7 +34,7 @@ export class UserError extends AppError {
     static userNotFound() {
         return new UserError({
             message: "Utilizador inexistente",
-            error: "USER_NOT_FOUND",
+            name: "USER_NOT_FOUND",
             statusCode: 404
         })
     }
@@ -42,7 +42,7 @@ export class UserError extends AppError {
     static userExists() {
         return new UserError({
             message: "Este utilizador já existe",
-            error: "USER_ALREADY_EXISTS",
+            name: "USER_ALREADY_EXISTS",
             statusCode: 409
         })
     }
@@ -53,11 +53,11 @@ export class AuthError extends AppError {
         super(params)
     }
 
-    static failedAuth() {
-        return new AppError({
+    static invalidCredentials() {
+        return new AuthError({
             statusCode: 403,
             message: "Utilizador ou senha inválida.",
-            error: "AUTH_FAILED",
+            name: "AUTH_FAILED",
             issues: [
                 { 
                     target: 'email',
@@ -70,12 +70,20 @@ export class AuthError extends AppError {
     }
 
     // Admin
+    
+    static notAuthorized() {
+        return new AuthError({
+            statusCode: 403,
+            message: "Você não está autorizado para esta ação.",
+            name: "FORBIDDEN"
+        })
+    }
 
     static invalidToken() {
-        return new AppError({
+        return new AuthError({
             statusCode: 403,
             message: "Não autorizado.",
-            error: "ACCESS_FORBIDDEN"
+            name: "INVALID_TOKEN"
         })
     }
 }

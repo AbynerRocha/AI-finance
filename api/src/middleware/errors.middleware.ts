@@ -3,13 +3,15 @@ import { AppError, AuthError } from "../utils/error.js";
 import { ZodError } from "zod";
 
 export function errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
-    if(error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-        error = { name: error.name, ...AuthError.invalidToken() }
+    if (error.name === 'JsonWebTokenError') {
+        error = AuthError.invalidToken()
+    } else if (error.name === 'TokenExpiredError') {
+        error = { ...AuthError.notAuthorized(), name: "EXPIRED_TOKEN" }
     }
 
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({
-            error: error.error,
+            error: error.name,
             message: error.message,
             issues: error.issues
         })

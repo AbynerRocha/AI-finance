@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { env } from './env.js'
 import routes from './routes/index.js'
-import { errorHandler } from './middlewares/errors.middleware.js'
+import { errorHandler } from './middleware/errors.middleware.js'
 
 const app = express()
 const port = env.PORT

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { env } from '../../../env.js'
+import { AuthError } from '../../../utils/error.js'
 
 const secret = env.JWT_SECRET
 
@@ -16,6 +17,20 @@ export async function validateAuthToken(token: string) {
         const verified = jwt.verify(token, secret)
 
         return !!verified
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function getDataFromAuthToken(token: string) {
+    try {
+        const decoded = jwt.decode(token, { json: true })
+        
+        if(decoded === null) {
+            throw AuthError.invalidToken()
+        }
+
+        return decoded as { userId: string, accessLevel: AccessLevel }
     } catch (error) {
         throw error
     }
