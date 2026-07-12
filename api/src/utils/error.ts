@@ -57,7 +57,7 @@ export class AuthError extends AppError {
         return new AuthError({
             statusCode: 403,
             message: "Utilizador ou senha inválida.",
-            name: "AUTH_FAILED",
+            name: "INVALID_CREDENTIALS",
             issues: [
                 { 
                     target: 'email',

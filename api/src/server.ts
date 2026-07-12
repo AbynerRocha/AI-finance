@@ -10,7 +10,8 @@ const port = env.PORT
 app.use(express.json())
 app.use(cors({
     origin: "*",
-    methods: ['POST', 'GET', 'DELETE', 'PUT']
+    methods: ['POST', 'GET', 'DELETE', 'PUT'],
+    credentials: true
 }))
 
 app.use(routes)

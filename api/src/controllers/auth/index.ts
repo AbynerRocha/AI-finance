@@ -1,5 +1,5 @@
 import type { User } from "../../generated/prisma/client.js";
-import { AuthError, UserError } from "../../utils/error.js";
+import { AuthError } from "../../utils/error.js";
 import { getUser, verifyUserPassword } from "../user/index.js";
 import argon2 from 'argon2'
 import { generateAuthToken, type AccessLevel } from "./token/index.js";
@@ -9,7 +9,7 @@ export async function loginUser(email: string, password: string) {
     let user = await getUser({ email })
     
     if (!user) {
-        throw UserError.userNotFound()
+        throw AuthError.invalidCredentials()
     }
 
     const matchPassword = await verifyUserPassword(password, user.email)

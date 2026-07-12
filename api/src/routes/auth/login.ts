@@ -9,7 +9,7 @@ export async function loginRoute(req: LoginRequest, res: Response, next: NextFun
         const { authToken, user } = await loginUser(email, password)
         
         res.cookie(cookieAuthToken.name, authToken, cookieAuthToken.options)
-        res.status(200).json(user)
+        res.status(200).json()
     } catch (error) {
         return next(error)
     }

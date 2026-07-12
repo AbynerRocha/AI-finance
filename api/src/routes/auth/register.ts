@@ -12,7 +12,7 @@ export async function registerUserRoute(req: RegisterUserRequest, res: Response,
         const authToken = await generateAuthToken(user.id, user.accessLevel as AccessLevel)
 
         res.cookie(cookieAuthToken.name, authToken, cookieAuthToken.options)
-        return res.status(201).json(user)
+        return res.status(201).json()
     } catch (error) {
         next(error)
     }
