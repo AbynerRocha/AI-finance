@@ -18,7 +18,7 @@ enum TransactionTypes {
   OTHER
 }
 
-enum AccountTypes {
+enum WalletType {
   MAIN
   SAVINGS
   INVESTING
@@ -33,9 +33,10 @@ model User {
 
   createdAt DateTime?      @default(now()) @map("created_at")
   finances  Transactions[]
-  accounts  Account[]
+  accounts  Wallet[]
 
-  accessLevel String @default("user")
+  accessLevel   String          @default("user")
+  refreshTokens RefreshTokens[]
 
   @@map("tb_users")
 }
@@ -46,22 +47,40 @@ model Transactions {
   userId String @map("finance_user_id")
 
   type TransactionTypes
-  date DateTime?        @default(now()) @map("created_at")
+  date DateTime         @default(now()) @map("created_at")
+
+  walletId String?
+  wallet   Wallet? @relation(fields: [walletId], references: [id])
 
   @@index([userId, date])
   @@map("tb_transactions")
 }
 
-model Account {
+model Wallet {
   id     String @unique @default(uuid())
   User   User   @relation(fields: [userId], references: [id])
   userId String @map("account_user_id")
 
-  type       AccountTypes
-  currency   String       @default("DOL") @db.Char(3)
-  amountCent BigInt       @default(0)
-  createdAt  DateTime?    @default(now()) @map("created_at")
+  type         WalletType
+  currency     String         @default("DOL") @db.Char(3)
+  amountCent   BigInt         @default(0)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  Transactions Transactions[]
 
   @@index([userId])
-  @@map("tb_accounts")
+  @@map("tb_wallets")
+}
+
+model RefreshTokens {
+  id Int @id @default(autoincrement())
+
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String @map("user_id")
+  token     String @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  @@index([userId])
+  @@map("tb_refresh_tokens")
 }

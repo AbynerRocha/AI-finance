@@ -1,8 +1,8 @@
-import type { User } from "../../generated/prisma/client.js";
+import argon2 from 'argon2'
 import { AuthError } from "../../utils/error.js";
 import { getUser, verifyUserPassword } from "../user/index.js";
-import argon2 from 'argon2'
-import { generateAuthToken, type AccessLevel } from "./token/index.js";
+import { generateAccessToken, generateRefreshToken } from "./token/index.js";
+import type { AccessLevel } from "../../@types/access-level.js";
 
 export async function loginUser(email: string, password: string) {
 
@@ -18,9 +18,10 @@ export async function loginUser(email: string, password: string) {
         throw AuthError.invalidCredentials()
     }
 
-    const authToken = await generateAuthToken(user.id, user.accessLevel as AccessLevel)
+    const refreshToken = await generateRefreshToken(user.id, user.accessLevel as AccessLevel)
+    const accessToken = await generateAccessToken(user.id, user.accessLevel as AccessLevel)
 
-    return { user, authToken }
+    return { user, refreshToken, accessToken }
 }
 
 

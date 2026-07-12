@@ -1,11 +1,12 @@
+import { REFRESH_TOKEN_DURATION } from "../controllers/auth/token/index.js";
 
 const prefix = 'finance_'
 
-export const cookieAuthToken = {
-    name: prefix + 'token',
+export const cookieRefreshToken = {
+    name: prefix + 'refresh_token',
     options: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7 // 7d
+        maxAge: REFRESH_TOKEN_DURATION
     }
 }

@@ -5,7 +5,7 @@ import { loginUser } from '../../src/controllers/auth/index.js'
 const mocks = vi.hoisted(() => ({
     getUser: vi.fn(),
     verifyUserPassword: vi.fn(),
-    generateAuthToken: vi.fn()
+    generateAccessToken: vi.fn()
 }))
 
 vi.mock("../../src/controllers/user/", () => ({
@@ -14,7 +14,7 @@ vi.mock("../../src/controllers/user/", () => ({
 }))
 
 vi.mock("../../src/controllers/auth/token/", () => ({
-    generateAuthToken: mocks.generateAuthToken
+    generateAccessToken: mocks.generateAccessToken
 }))
 
 describe('login user', () => {
@@ -33,14 +33,14 @@ describe('login user', () => {
 
         mocks.getUser.mockResolvedValue(mockUser)
         mocks.verifyUserPassword.mockResolvedValue(true)
-        mocks.generateAuthToken.mockResolvedValue(mockToken)
+        mocks.generateAccessToken.mockResolvedValue(mockToken)
 
         const result = await loginUser(mockUser.email, password)
         
         expect(mocks.getUser).toHaveBeenCalledWith({ email: mockUser.email })
         expect(mocks.verifyUserPassword).toHaveBeenCalledWith(password, mockUser.email)
-        expect(mocks.generateAuthToken).toHaveBeenCalledWith(mockUser.id, mockUser.accessLevel)
-        expect(result).toEqual({ user: mockUser, authToken: mockToken })
+        expect(mocks.generateAccessToken).toHaveBeenCalledWith(mockUser.id, mockUser.accessLevel)
+        expect(result).toEqual({ user: mockUser, accessToken: mockToken })
     })    
 
     it("Should throw UserError.userNotFound() if user does not exist", async () => {
@@ -53,7 +53,7 @@ describe('login user', () => {
         await expect(loginUser(email, password)).rejects.toThrow(UserError.userNotFound())
         expect(mocks.getUser).toHaveBeenCalledWith({ email })
         expect(mocks.verifyUserPassword).not.toHaveBeenCalled()
-        expect(mocks.generateAuthToken).not.toHaveBeenCalled()
+        expect(mocks.generateAccessToken).not.toHaveBeenCalled()
     })
 
     it("Should throw AuthError.invalidCredentials() if user exists but credentials are invalid", async () => {
@@ -66,7 +66,7 @@ describe('login user', () => {
         await expect(loginUser(email, password)).rejects.toThrow(AuthError.invalidCredentials())
         expect(mocks.getUser).toHaveBeenCalledWith({ email })
         expect(mocks.verifyUserPassword).toHaveBeenCalledWith(password, email)
-        expect(mocks.generateAuthToken).not.toHaveBeenCalled()
+        expect(mocks.generateAccessToken).not.toHaveBeenCalled()
     })
 })
 

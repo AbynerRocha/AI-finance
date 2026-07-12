@@ -1,4 +1,5 @@
 import z from 'zod'
+import { AuthError } from '../utils/error.js';
 
 export const createUserSchema = z.object({
     body: z.object({
@@ -7,7 +8,7 @@ export const createUserSchema = z.object({
         password: z.string("A senha é obrigatória.").min(6, "A senha tem que conter no minímo 6 caractéres.")
     }),
     headers: z.looseObject({
-        authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", "Token inválido.")
+        authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", AuthError.notAuthorized().message)
     })
 })
 
@@ -16,7 +17,7 @@ export const getUserSchema = z.object({
         id: z.string()
     }),
     headers: z.looseObject({
-        authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", "Token inválido.")
+        authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", AuthError.notAuthorized().message)
     })
 })
 

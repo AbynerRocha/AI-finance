@@ -3,13 +3,15 @@ import cors from 'cors'
 import { env } from './env.js'
 import routes from './routes/index.js'
 import { errorHandler } from './middleware/errors.middleware.js'
+import cookieParser from 'cookie-parser';
 
 const app = express()
 const port = env.PORT
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({
-    origin: "*",
+    origin: env.FRONT_END_URL,
     methods: ['POST', 'GET', 'DELETE', 'PUT'],
     credentials: true
 }))

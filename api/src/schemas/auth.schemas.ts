@@ -1,9 +1,13 @@
 import z from 'zod'
+import { AuthError } from '../utils/error.js';
 
 export const loginSchema = z.object({
     body: z.object({
         email: z.email("O email é obrigatório"),
         password: z.string("A senha é obrigatória.")
+    }),
+    cookies: z.object({
+        finance_token: z.string()
     })
 })
 
@@ -15,5 +19,12 @@ export const registerSchema = z.object({
     })
 })
 
+export const refreshSchema = z.object({
+    cookies: z.object({
+        finance_refresh_token: z.string()
+    })
+})
+
 export type LoginSchemaType = z.infer<typeof loginSchema>
+export type RefreshSchemaType = z.infer<typeof refreshSchema>
 export type RegisterSchemaType = z.infer<typeof registerSchema>
