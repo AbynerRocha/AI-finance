@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userRoutes from './user.routes.js'
 import authRoutes from './auth.routes.js'
+import walletRoutes from './wallet.routes.js'
 import { generateAccessToken, getDataFromToken } from "../controllers/auth/token/index.js";
 
 const router = Router()
@@ -15,6 +16,7 @@ router.get('/', async (req, res) => {
 
 router.use('/user', userRoutes)
 router.use('/auth', authRoutes)
+router.use('/wallet', walletRoutes)
 
 export default router
 

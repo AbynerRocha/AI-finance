@@ -8,10 +8,10 @@ const router = Router()
 
 export type CreateWalletRequest = Request<any, any, CreateWalletSchema['body']>
 
-router.post('/', validate(createWalletSchema), (req: CreateWalletRequest, res, next) => createWalletRoute)
+router.post('/', validate(createWalletSchema), createWalletRoute)
 
 export type getAllWalletsRequest = Request<any, any, null>
 
-router.get('/', validate(createWalletSchema), (req: getAllWalletsRequest, res, next) => getAllWalletsRoute)
+router.get('/', validate(getAllWalletsSchema), getAllWalletsRoute)
 
 export default router

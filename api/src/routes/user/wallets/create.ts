@@ -5,17 +5,17 @@ import { getDataFromToken } from "../../../controllers/auth/token/index.js";
 import { AuthError } from "../../../utils/error.js";
 
 export async function createWalletRoute(req: CreateWalletRequest, res: Response, next: NextFunction) {
-    const { userId } = req.body
-
     try {
-        if(req.user.userId !== userId) {
+        const { name } = req.body
+
+        if (!req.user?.userId) {
             throw AuthError.notAuthorized()
         }
 
-        const wallet = await Wallet.createWallet({ userId })
+        const wallet = await Wallet.createWallet({ name, userId: req.user.userId })
 
-        return res.status(201).send(wallet.walletId)
+        return res.status(201).json({ walletId: wallet.walletId })
     } catch(error) {
-        next(error)        
+        next(error)
     }
 }

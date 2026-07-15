@@ -13,6 +13,24 @@ export class Wallet {
         this.walletId = walletId
     }
 
+    static async createWallet({ name, userId }: { name: string, userId: string }) {
+        try {
+            const wallet = await prisma.wallet.create({
+                data: {
+                    name,
+                    type: "MAIN",
+                    userId,
+                }
+            })
+
+            return new Wallet({ walletId: wallet.id })
+        } catch (error) {
+
+            console.log(error)
+            throw error
+        }
+    }
+
     async getWalletData(select: WalletSelect<DefaultArgs> | null = null) {
         try {
             const isCached = await this.isWalletInCache()
@@ -86,18 +104,4 @@ export class Wallet {
         })
     }
 
-    static async createWallet({  userId }: { userId: string }) {
-        try {
-            const wallet = await prisma.wallet.create({
-                data: {
-                    type: "MAIN",
-                    userId
-                }
-            })
-
-            return new Wallet({ walletId: wallet.id })
-        } catch (error) {
-            throw error
-        }
-    }
 }

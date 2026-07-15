@@ -3,7 +3,7 @@ import { AuthError } from "../utils/error.js";
 
 export const createWalletSchema = z.object({
     body: z.object({
-        userId: z.string()  
+        name: z.string()  
     }),
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)

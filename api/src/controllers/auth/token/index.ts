@@ -20,14 +20,13 @@ export async function generateAccessToken(userId: string, accessLevel: AccessLev
 export async function generateRefreshToken(userId: string, accessLevel: AccessLevel) {
     try {
         const token = jwt.sign({ userId, accessLevel }, secret, { expiresIn: REFRESH_TOKEN_DURATION })
-    
+
         await prisma.refreshTokens.create({
             data: {
                 userId,
                 token,
                 createdAt: new Date(),
                 expiresAt: new Date(Date.now() + REFRESH_TOKEN_DURATION * 1000),
-                revokedAt: null
             }
         })
         
@@ -102,4 +101,4 @@ export async function getDataFromToken(token: string) {
     } catch (error) {
         throw error
     }
-}
+}   

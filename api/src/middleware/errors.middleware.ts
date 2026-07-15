@@ -6,7 +6,11 @@ export function errorHandler(error: Error, req: Request, res: Response, next: Ne
     if (error.name === 'JsonWebTokenError') {
         error = AuthError.invalidToken()
     } else if (error.name === 'TokenExpiredError') {
-        error = { ...AuthError.notAuthorized(), name: "EXPIRED_TOKEN" }
+        error = new AuthError({
+            name: 'EXPIRED_TOKEN',
+            message: "Você não está autorizado para esta ação.",
+            statusCode: 401
+        })
     }
 
     if (error instanceof AppError) {

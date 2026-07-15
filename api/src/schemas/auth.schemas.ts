@@ -6,9 +6,6 @@ export const loginSchema = z.object({
         email: z.email("O email é obrigatório"),
         password: z.string("A senha é obrigatória.")
     }),
-    cookies: z.object({
-        finance_token: z.string()
-    })
 })
 
 export const registerSchema = z.object({

@@ -4,5 +4,6 @@ yarn.lock
 /src/generated
 /src/dist
 /prisma/migrations
+
 .env
 .env.dev

@@ -9,7 +9,6 @@ export async function getUserRoute(req: GetUserRequest, res: Response, next: Nex
 
     try {
         // Verifica se quem faz a requisição, é o próprio utilizador ou algum administrador.
-        console.log(req.user)
         if(req.user.userId !== id && req.user.accessLevel !== 'admin'){
             throw AuthError.notAuthorized()
         }

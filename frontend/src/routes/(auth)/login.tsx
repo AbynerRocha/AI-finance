@@ -1,26 +1,37 @@
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { Logo } from '#/components/Logo';
-import { loginUser } from '#/services/auth';
 import { API_ERROR } from "#/utils/errors"
 import { AxiosError } from 'axios';
-import type { ApiError } from '../../types/api-error';
 import { twMerge } from 'tailwind-merge';
 import { ZodError } from 'zod'
-import { loginSchema } from '../schemas/user';
+import { loginSchema } from '../../schemas/user';
+import type { ApiError } from '../../@types/api-error';
+import { Input } from '#/components/Input/index.tsx';
 
 
-export const Route = createFileRoute('/login')({ component: LoginPage })
-
-// ─── Login ────────────────────────────────────────────────────────────────────
+export const Route = createFileRoute('/(auth)/login')({
+  validateSearch: (search?: { redirect?: string }) => ({
+    redirect: search?.redirect ? String(search.redirect) : "/dashboard"
+  }),
+  beforeLoad: async ({ context, search }) => {
+    if (context.auth?.isAuthenticated) {
+      throw redirect({
+        to: search.redirect,
+        replace: true
+      })
+    }
+  },
+  component: LoginPage
+})
 
 function LoginPage() {
-  const router = useRouter()
+  const { auth } = Route.useRouteContext()
+  const { redirect } = Route.useSearch()
+  const navigate = Route.useNavigate()
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ target: string, message: string }[]>([])
 
@@ -31,13 +42,16 @@ function LoginPage() {
     try {
       setLoading(true);
 
-      const validateFields = await loginSchema.parseAsync({ email, password })
-      const logged = await loginUser(validateFields)
+      const validateFields = await loginSchema.parseAsync({ email, password })  
+      const logged = await auth?.login(validateFields)
 
       if (logged) {
-        router.navigate({
-          to: "/dashboard",
-          replace: true
+        navigate({
+          to: redirect,
+          replace: true,
+          search: {
+            redirect: ""
+          }
         })
       }
     } catch (error) {
@@ -143,53 +157,25 @@ function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className='space-y-3'>
-                <label className={twMerge("block text-xs text-muted-foreground mb-2 tracking-wider uppercase", errors.find(v => v.target === 'password') && "text-red-400")} style={{ fontFamily: "DM Mono, monospace" }}>
-                  E-mail
-                </label>
-                <input
+                <Input
                   type="text"
                   value={email}
+                  label="E-mail"
                   onChange={(e) => setEmail(e.target.value)}
-                  className={twMerge(
-                    "w-full bg-secondary border border-border rounded-lg px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-muted-foreground",
-                    (errors.find(v => v.target === 'email') && "border-red-900 bg-red-950/30")
-                  )}
+                  error={errors.find(v => v.target === 'email')?.message}
                 />
-
-                {errors.filter(v => v.target === 'email').map((err) => {
-                  return (
-                    <p className='text-red-200 bg-red-500/40 rounded-2xl px-4 py-3 overflow-hidden wrap-break-word'>{err.message}</p>
-                  )
-                })}
               </div>
 
               <div className='space-y-3'>
-                <label className={twMerge("block text-xs text-muted-foreground mb-2 tracking-wider uppercase", errors.find(v => v.target === 'password') && "text-red-400")} style={{ fontFamily: "DM Mono, monospace" }}>
-                  Senha
-                </label>
                 <div className="relative">
-                  <input
-                    type={showPw ? "text" : "password"}
+                  <Input
+                    type="password"
                     value={password}
+                    label="Senha"
+                    error={errors.find(v => v.target === 'password')?.message}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={twMerge(
-                      "w-full bg-secondary border border-border rounded-lg px-4 py-3 text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all pr-10 placeholder:text-muted-foreground",
-                      errors.find((v) => v.target === 'password') && "border-red-900 bg-red-950/30"
-                    )}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
                 </div>
-                {errors.filter(v => v.target === 'password').map((err) => {
-                  return (
-                    <p className='text-red-200 bg-red-500/40 rounded-2xl px-4 py-3 overflow-hidden wrap-break-word'>{err.message}</p>
-                  )
-                })}
                 <div className="flex justify-end">
                   <button type="button" className="text-xs text-primary hover:text-primary/80 transition-colors">
                     Esqueceu a senha?
@@ -211,9 +197,9 @@ function LoginPage() {
                 ) : "Entrar"}
               </button>
 
-              {errors.filter(v => v.target === 'global').map((err) => {
+              {errors.filter(v => v.target === 'global').map((err, idx) => {
                 return (
-                  <p className='text-red-200 bg-red-500/40 rounded-2xl px-4 py-3 overflow-hidden wrap-break-word'>{err.message}</p>
+                  <p key={idx} className='text-red-200 bg-red-500/40 rounded-2xl px-4 py-3 overflow-hidden wrap-break-word'>{err.message}</p>
                 )
               })}
 
@@ -221,7 +207,7 @@ function LoginPage() {
 
             <p className="text-center text-xs text-muted-foreground mt-8">
               Não tem conta?{" "}
-              <Link to='/register'  className="text-primary hover:text-primary/80 transition-colors font-medium">
+              <Link to='/register' search={{ redirect }} className="text-primary hover:text-primary/80 transition-colors font-medium">
                 Criar conta grátis
               </Link>
             </p>

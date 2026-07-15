@@ -92,6 +92,15 @@ export class AuthError extends AppError {
         })
     }
 
+    static expiredAccessToken() {
+        return new AuthError({
+            message: "Sessão expirada.",
+            name: "ACCESS_TOKEN_EXPIRED",
+            statusCode: 401,
+            redirect: "/login"
+        })
+    }
+    
     static expiredRefreshToken() {
         return new AuthError({
             message: "Sessão expirada.",

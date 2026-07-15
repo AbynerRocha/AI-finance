@@ -57,10 +57,10 @@ model Transactions {
 }
 
 model Wallet {
-  id     String @unique @default(uuid())
-  User   User   @relation(fields: [userId], references: [id])
-  userId String @map("account_user_id")
-
+  id           String         @unique @default(uuid())
+  User         User           @relation(fields: [userId], references: [id])
+  userId       String         @map("account_user_id")
+  name         String
   type         WalletType
   currency     String         @default("DOL") @db.Char(3)
   amountCent   BigInt         @default(0)
@@ -74,11 +74,11 @@ model Wallet {
 model RefreshTokens {
   id Int @id @default(autoincrement())
 
-  User      User     @relation(fields: [userId], references: [id])
-  userId    String @map("user_id")
-  token     String @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  expiresAt DateTime @map("expires_at")
+  User      User      @relation(fields: [userId], references: [id])
+  userId    String    @map("user_id")
+  token     String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  expiresAt DateTime  @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
 
   @@index([userId])
