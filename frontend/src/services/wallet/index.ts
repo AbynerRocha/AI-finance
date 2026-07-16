@@ -1,5 +1,6 @@
-import type { WalletData } from "#/schemas/wallet/index.ts";
+import { getAllUserWalletsSchema, walletSchema, type WalletData } from "#/schemas/wallet/index.ts";
 import { api } from "#/utils/axios.ts";
+import { AxiosError } from "axios";
 import { getAccessToken } from "../auth";
 
 export async function createWallet({ accessToken, name }: { accessToken: string; name: string }) {
@@ -19,8 +20,6 @@ export async function createWallet({ accessToken, name }: { accessToken: string;
 export async function getUserWallets() {
     const accessToken = getAccessToken()
 
-    console.log(accessToken)
-
     try {
         const response = await api.get<WalletData[]>('/wallet', {
             headers: {
@@ -28,8 +27,24 @@ export async function getUserWallets() {
             }
         }) 
 
-        return response.data
-    } catch (error) {
-        throw error   
+        return getAllUserWalletsSchema.parse(response.data)
+    } catch (error) {   
+       throw error
+    }
+}
+
+export async function getUserWallet(walletId: string) {
+    const accessToken = getAccessToken()
+
+    try {
+        const response = await api.get<WalletData>(`/wallet/${walletId}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }) 
+
+        return walletSchema.parse(response.data)
+    } catch (error) {   
+       throw error
     }
 }

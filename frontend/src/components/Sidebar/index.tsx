@@ -1,5 +1,5 @@
 import { Logo } from '#/components/Logo';
-import { ArrowUpRight, CreditCard, LayoutDashboard, LogOut, Settings, Target, X } from 'lucide-react';
+import { ArrowUpRight, Wallet2Icon, LayoutDashboard, LogOut, Settings, Target, X } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 type SidebarProps = {
@@ -13,13 +13,12 @@ type SidebarProps = {
 const navItems = [
   { id: "dashboard", label: "Visão Geral", icon: LayoutDashboard },
   { id: "transactions", label: "Transações", icon: ArrowUpRight },
-  { id: "cards", label: "Cartões", icon: CreditCard },
+  { id: "wallets", label: "Carteiras", icon: Wallet2Icon },
   { id: "goals", label: "Metas", icon: Target },
   { id: "settings", label: "Configurações", icon: Settings },
 ];
 
 export function Sidebar({ sidebarOpen, activeNav, setActiveNav, handleLogout, setSidebarOpen }: SidebarProps) {
-  
 
   return (
     <aside

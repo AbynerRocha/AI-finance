@@ -16,6 +16,12 @@ export const registerSchema = z.object({
     })
 })
 
+export const logoutSchema = z.object({
+    cookies: z.object({
+        finance_refresh_token: z.string()
+    })
+})
+
 export const refreshSchema = z.object({
     cookies: z.object({
         finance_refresh_token: z.string()
@@ -23,5 +29,6 @@ export const refreshSchema = z.object({
 })
 
 export type LoginSchemaType = z.infer<typeof loginSchema>
+export type LogoutSchemaType = z.infer<typeof logoutSchema>
 export type RefreshSchemaType = z.infer<typeof refreshSchema>
 export type RegisterSchemaType = z.infer<typeof registerSchema>

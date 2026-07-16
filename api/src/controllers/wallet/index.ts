@@ -6,10 +6,10 @@ import type { DefaultArgs } from "@prisma/client/runtime/client";
 import type { WalletSelect } from "../../generated/prisma/models.js";
 
 export class Wallet {
-    public readonly walletId: string;
+    private readonly walletId: string;
     private balance?: bigint;
 
-    constructor({ walletId }: { walletId: string }) {
+     constructor({ walletId }: { walletId: string }) { 
         this.walletId = walletId
     }
 
@@ -33,21 +33,21 @@ export class Wallet {
 
     async getWalletData(select: WalletSelect<DefaultArgs> | null = null) {
         try {
-            const isCached = await this.isWalletInCache()
+            const cachedWallet = await this.isWalletInCache()
 
-            if (isCached) {
-                return isCached
+            if (cachedWallet) {
+                return cachedWallet
             }
 
-            const walletBalance = await prisma.wallet.findUnique({ where: { id: this.walletId }, select })
+            const wallet = await prisma.wallet.findUnique({ where: { id: this.walletId }, select })
 
-            if (walletBalance === null) {
+            if (wallet === null) {
                 throw WalletError.walletNotFound()
             }
 
-            this.saveWalletInCache(walletBalance)
+            this.saveWalletInCache(wallet)
 
-            return walletBalance
+            return wallet
         } catch (error) {
             throw error
         }
@@ -88,19 +88,33 @@ export class Wallet {
         return walletBallance
     }
 
-    private async isWalletInCache() {
-        const isCached = await redisClient.hGetAll(`user:wallet:${this.walletId}`)
-        return isCached
+    private async isWalletInCache(): Promise<WalletData | null> {
+        const cachedWallet = await redisClient.hGetAll(`user:wallet:${this.walletId}`)
+
+        if (!cachedWallet || Object.keys(cachedWallet).length === 0) {
+            return null
+        }
+
+        return {
+            id: cachedWallet.id,
+            userId: cachedWallet.userId,
+            name: cachedWallet.name ?? '',
+            type: cachedWallet.type as WalletData['type'],
+            currency: cachedWallet.currency ?? 'DOL',
+            amountCent: BigInt(cachedWallet.amountCent ?? '0'),
+            createdAt: cachedWallet.createdAt ? new Date(cachedWallet.createdAt) : new Date(),
+        } as WalletData
     }
 
-    private saveWalletInCache({ id, userId, type, currency,amountCent, createdAt }: WalletData) {
+    private saveWalletInCache({ id, userId, name, type, currency, amountCent, createdAt }: WalletData) {
         redisClient.hSet(`user:wallet:${this.walletId}`, {
             id,
             userId,
+            name,
             type,
             currency,
             amountCent: amountCent.toString(),
-            createdAt: createdAt!.toDateString()
+            createdAt: createdAt.toISOString()
         })
     }
 

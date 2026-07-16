@@ -6,7 +6,7 @@ function InnerApp() {
     const auth = useAuth()
     const router = getRouter()
 
-    return <RouterProvider router={router} context={{ auth }} />
+    return <RouterProvider defaultErrorComponent={(v) => {<p>{v.error.message}</p>}} router={router} context={{ auth }} />
 }
 
 export default function App() {

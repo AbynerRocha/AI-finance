@@ -24,7 +24,6 @@ export async function loginUser(email: string, password: string) {
     return { user, refreshToken, accessToken }
 }
 
-
 export async function hashPassword(password: string) {
     return await argon2.hash(password, {
         type: argon2.argon2id,

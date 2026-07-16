@@ -1,10 +1,8 @@
 
 import type { LoginSchemaType, RegisterSchemaType, UserData } from "#/schemas/user/index.ts";
 import { api } from "#/utils/axios";
-import Cookie from 'js-cookie'
 
 const accessTokenKey = 'finance_access_token' 
-const refreshTokenKey = 'finance_refresh_token' 
 
 type LoginResponse = {
     user: UserData,
@@ -61,10 +59,6 @@ export async function saveAccessToken(token: string) {
 
 export async function deleteAccessToken() {
     localStorage.removeItem(accessTokenKey)
-}
-
-export async function deleteRefreshToken() {
-    Cookie.remove(refreshTokenKey)
 }
 
 export async function getNewAccesToken() {

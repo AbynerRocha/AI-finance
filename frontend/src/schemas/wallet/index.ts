@@ -6,8 +6,10 @@ export const walletSchema = z.object({
     type: z.string(),
     userId: z.string(),
     currency: z.string(),
-    amountCent: z.bigint(),
-    createdAt: z.date()
+    amountCent: z.coerce.bigint(),
+    createdAt: z.coerce.date()
 })
+
+export const getAllUserWalletsSchema = z.array(walletSchema)
 
 export type WalletData = z.infer<typeof walletSchema>

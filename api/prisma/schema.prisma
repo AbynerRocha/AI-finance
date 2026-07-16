@@ -26,7 +26,7 @@ enum WalletType {
 }
 
 model User {
-  id       String @unique @default(uuid())
+  id       String @id @unique @default(uuid())
   name     String
   email    String @unique
   password String
@@ -38,11 +38,12 @@ model User {
   accessLevel   String          @default("user")
   refreshTokens RefreshTokens[]
 
+  @@index([id])
   @@map("tb_users")
 }
 
 model Transactions {
-  id     String @unique @default(nanoid())
+  id     String @id @unique @default(nanoid())
   User   User   @relation(fields: [userId], references: [id])
   userId String @map("finance_user_id")
 
@@ -57,7 +58,7 @@ model Transactions {
 }
 
 model Wallet {
-  id           String         @unique @default(uuid())
+  id           String         @id @unique @default(uuid())
   User         User           @relation(fields: [userId], references: [id])
   userId       String         @map("account_user_id")
   name         String
@@ -67,7 +68,7 @@ model Wallet {
   createdAt    DateTime       @default(now()) @map("created_at")
   Transactions Transactions[]
 
-  @@index([userId])
+  @@index([id, userId])
   @@map("tb_wallets")
 }
 
@@ -81,6 +82,6 @@ model RefreshTokens {
   expiresAt DateTime  @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
 
-  @@index([userId])
+  @@index([token, userId])
   @@map("tb_refresh_tokens")
 }

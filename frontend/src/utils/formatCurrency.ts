@@ -40,7 +40,7 @@ const goals = [
   { label: "Notebook novo", current: 2100, goal: 4500, color: "#f0c65e" },
 ];
 
-export const formatMoney = (cents: number, currency: string = "BRL") =>
+export const formatMoney = (cents: number | BigInt, currency: string = "BRL") =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency }).format(Number(cents) / 100);
 
 export const toCents = (amount: number): bigint => {

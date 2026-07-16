@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { deleteAccessToken, deleteRefreshToken, getAccessToken, loginUser, LogoutUser, saveAccessToken } from "../services/auth";
+import { deleteAccessToken, getAccessToken, loginUser, LogoutUser, saveAccessToken } from "../services/auth";
 import type { UserData } from "../schemas/user";
 import { api } from "#/utils/axios.ts";
 import Cookies from "js-cookie";
@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 export type AuthContextData = {
     isAuthenticated: boolean
     accessToken: string | null
-    refreshToken: string | null
     user: UserData | null
     login: ({ email, password }: { email: string, password: string }) => Promise<boolean>
     requestNewAccessToken: () => Promise<string>
@@ -18,24 +17,20 @@ const AuthContext = createContext<AuthContextData | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null)
-    const [refreshToken] = useState<string | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
     const [user, setUser] = useState<UserData | null>(null)
 
     useEffect(() => {
         const savedAccessToken = getAccessToken()
-        const cookieRefreshToken = Cookies.get("finance_refresh_token")
-
-        console.log(cookieRefreshToken)
 
         if(savedAccessToken) {
             setAccessToken(savedAccessToken)
             setIsAuthenticated(true)
+            return
         }
 
-        if(!cookieRefreshToken) {
-            console.log("Logout")
-            logout()
+        if(!savedAccessToken) {
+            requestNewAccessToken()
             return
         }
     }, [])
@@ -75,7 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(null)
             setAccessToken(null)
             deleteAccessToken()
-            deleteRefreshToken()
             setIsAuthenticated(false)
         } catch (error) {
             throw error
@@ -85,7 +79,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return <AuthContext.Provider
         value={{ 
             accessToken, 
-            refreshToken, 
             isAuthenticated, 
             login, 
             logout,
