@@ -15,8 +15,8 @@ frontend/todos.json
 
 api/node_modules/
 api/yarn.lock
-api//src/generated
-api//src/dist
-api//prisma/migrations
+api/src/generated
+api/src/dist
+api/prisma/migrations
 api/.env
 api/.env.dev
