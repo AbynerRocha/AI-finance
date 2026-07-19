@@ -5,7 +5,7 @@ import routes from './routes/index.js'
 import { errorHandler } from './middleware/errors.middleware.js'
 import cookieParser from 'cookie-parser';
 
-const app = express()
+export const app = express()
 const port = env.PORT
 
 console.log()

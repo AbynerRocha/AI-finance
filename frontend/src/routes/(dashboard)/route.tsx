@@ -22,7 +22,7 @@ export const Route = createFileRoute('/(dashboard)')({
 function RouteComponent() {
   const { auth } = Route.useRouteContext()
   const navigate = Route.useNavigate()
-  const [activeNav, setActiveNav] = useState("dashboard");
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -30,8 +30,6 @@ function RouteComponent() {
       {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
-        activeNav={activeNav}
-        setActiveNav={setActiveNav}
         handleLogout={async () => {
           auth?.logout()
           navigate({

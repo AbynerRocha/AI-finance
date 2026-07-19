@@ -8,7 +8,7 @@ export async function getWalletRoute(req: GetWalletRequest, res: Response, next:
 
         const wallet = await new Wallet({ walletId }).getWalletData()
 
-        return res.status(200).json({...wallet, amountCent: wallet.amountCent.toString()})
+        return res.status(200).json({...wallet, amountCents: wallet.amountCents.toString()})
     } catch (error) {
         next(error)
 

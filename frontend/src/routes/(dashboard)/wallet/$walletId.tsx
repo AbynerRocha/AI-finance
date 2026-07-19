@@ -34,7 +34,7 @@ function RouteComponent() {
   return (
     <>
       <p>{wallet.name}</p>
-      <p>{formatMoney(wallet.amountCent)}</p>
+      <p>{formatMoney(wallet.amountCents)}</p>
     </>
   )
 }

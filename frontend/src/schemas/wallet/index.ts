@@ -1,4 +1,5 @@
 import z from 'zod'
+import { transactionSchema } from '../transactions';
 
 export const walletSchema = z.object({
     id: z.string(),
@@ -6,8 +7,9 @@ export const walletSchema = z.object({
     type: z.string(),
     userId: z.string(),
     currency: z.string(),
-    amountCent: z.coerce.bigint(),
-    createdAt: z.coerce.date()
+    amountCents: z.coerce.bigint(),
+    createdAt: z.coerce.date(),
+    transactions: z.optional(z.array(transactionSchema))
 })
 
 export const getAllUserWalletsSchema = z.array(walletSchema)

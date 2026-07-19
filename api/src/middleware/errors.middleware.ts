@@ -17,7 +17,8 @@ export function errorHandler(error: Error, req: Request, res: Response, next: Ne
         return res.status(error.statusCode).json({
             error: error.name,
             message: error.message,
-            issues: error.issues
+            issues: error.issues,
+            redirect: error.redirect
         })
     } else if (error instanceof ZodError) {
         return res.status(400).json({
@@ -25,7 +26,8 @@ export function errorHandler(error: Error, req: Request, res: Response, next: Ne
             issues: error.issues.map(err => ({
                 field: err.path[1],
                 message: err.message
-            }))
+            })),
+            redirect: (error.issues.find(v => v.path[1] === 'finance_refresh_token') ? '/login' : undefined)
         })
     }
 

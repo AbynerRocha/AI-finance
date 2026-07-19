@@ -1,6 +1,5 @@
 import { getAllUserWalletsSchema, walletSchema, type WalletData } from "#/schemas/wallet/index.ts";
 import { api } from "#/utils/axios.ts";
-import { AxiosError } from "axios";
 import { getAccessToken } from "../auth";
 
 export async function createWallet({ accessToken, name }: { accessToken: string; name: string }) {

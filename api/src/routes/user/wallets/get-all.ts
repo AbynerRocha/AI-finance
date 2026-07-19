@@ -11,7 +11,7 @@ export async function getAllWalletsRoute(req: getAllWalletsRequest, res: Respons
 
         const wallets = await prisma.wallet.findMany({ where: { userId: req.user.userId } })
 
-        return res.status(200).json(wallets.map((v) => ({...v, amountCent: v.amountCent.toString() })))
+        return res.status(200).json(wallets.map((v) => ({...v, amountCents: v.amountCents.toString() })))
     } catch (error) {
         next(error)
     }

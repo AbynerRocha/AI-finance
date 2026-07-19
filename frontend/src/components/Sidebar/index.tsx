@@ -1,24 +1,37 @@
 import { Logo } from '#/components/Logo';
+import { useRouter } from '@tanstack/react-router';
 import { ArrowUpRight, Wallet2Icon, LayoutDashboard, LogOut, Settings, Target, X } from 'lucide-react';
+import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 type SidebarProps = {
-  activeNav: string;
   sidebarOpen: boolean;
-  setActiveNav: (nav: string) => void;
   handleLogout: () => void;
   setSidebarOpen: (open: boolean) => void;
 }
 
 const navItems = [
-  { id: "dashboard", label: "Visão Geral", icon: LayoutDashboard },
-  { id: "transactions", label: "Transações", icon: ArrowUpRight },
-  { id: "wallets", label: "Carteiras", icon: Wallet2Icon },
-  { id: "goals", label: "Metas", icon: Target },
-  { id: "settings", label: "Configurações", icon: Settings },
+  { id: "dashboard", label: "Visão Geral", icon: LayoutDashboard, route: '/dashboard' },
+  { id: "transactions", label: "Transações", icon: ArrowUpRight, route: '/dashboard' },
+  { id: "wallets", label: "Carteiras", icon: Wallet2Icon, route: '/dashboard/wallets' },
+  { id: "goals", label: "Metas", icon: Target, route: '/dashboard' },
+  { id: "settings", label: "Configurações", icon: Settings, route: '/dashboard' },
 ];
 
-export function Sidebar({ sidebarOpen, activeNav, setActiveNav, handleLogout, setSidebarOpen }: SidebarProps) {
+export function Sidebar({ sidebarOpen, handleLogout, setSidebarOpen }: SidebarProps) {
+  const router = useRouter()
+  const [activeNav, setActiveNav] = useState<string>(navItems[0].id)
+
+  function handleSelectNav(id: string, route: string) {
+    if(activeNav === id) return
+
+    setSidebarOpen(false)
+    setActiveNav(id)
+
+    router.navigate({
+      to: route
+    })
+  }
 
   return (
     <aside
@@ -40,10 +53,10 @@ export function Sidebar({ sidebarOpen, activeNav, setActiveNav, handleLogout, se
       </div>
 
       <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-        {navItems.map(({ id, label, icon: Icon }) => (
+        {navItems.map(({ id, label, route, icon: Icon }) => (
           <button
             key={id}
-            onClick={() => { setActiveNav(id); setSidebarOpen(false); }}
+            onClick={() => handleSelectNav(id, route)}
             className={twMerge(
               "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all",
               activeNav === id ? "bg-primary/10 text-primary font-medium"

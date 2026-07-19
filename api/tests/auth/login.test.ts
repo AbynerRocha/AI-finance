@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { UserError, AuthError } from '../../src/utils/error.js'
 import { faker } from '@faker-js/faker'
-import { loginUser } from '../../src/controllers/auth/index.js'
+import { loginUser } from '../../src/controllers/auth/index.js';
+
 const mocks = vi.hoisted(() => ({
     getUser: vi.fn(),
     verifyUserPassword: vi.fn(),
@@ -25,7 +26,7 @@ describe('login user', () => {
     it('Should make login successfully and return the user data and token', async () => {
         const mockUser = {
             id: "e63fd5ab-6576-4fe2-9ab4-c7e438f1f28d",
-            email: "Test@test.com",
+            email: "teste@teste.com",
             accessLevel: 'user'
         }
         const password = "123456"

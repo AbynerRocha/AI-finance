@@ -54,11 +54,11 @@ export class Wallet {
     }
 
     async getBalance() {
-        const walletData = await this.getWalletData({ amountCent: true })
+        const walletData = await this.getWalletData({ amountCents: true })
 
-        this.balance = BigInt(walletData.amountCent)
+        this.balance = BigInt(walletData.amountCents)
 
-        return walletData.amountCent ? this.balance : BigInt(0)
+        return walletData.amountCents ? this.balance : BigInt(0)
     }
 
     async removeBalance(amount: bigint) {
@@ -79,7 +79,7 @@ export class Wallet {
                 id: this.walletId
             },
             data: {
-                amountCent: walletBallance
+                amountCents: walletBallance
             }
         })
 
@@ -101,19 +101,19 @@ export class Wallet {
             name: cachedWallet.name ?? '',
             type: cachedWallet.type as WalletData['type'],
             currency: cachedWallet.currency ?? 'DOL',
-            amountCent: BigInt(cachedWallet.amountCent ?? '0'),
+            amountCents: BigInt(cachedWallet.amountCents ?? '0'),
             createdAt: cachedWallet.createdAt ? new Date(cachedWallet.createdAt) : new Date(),
         } as WalletData
     }
 
-    private saveWalletInCache({ id, userId, name, type, currency, amountCent, createdAt }: WalletData) {
+    private saveWalletInCache({ id, userId, name, type, currency, amountCents, createdAt }: WalletData) {
         redisClient.hSet(`user:wallet:${this.walletId}`, {
             id,
             userId,
             name,
             type,
             currency,
-            amountCent: amountCent.toString(),
+            amountCents: amountCents.toString(),
             createdAt: createdAt.toISOString()
         })
     }
