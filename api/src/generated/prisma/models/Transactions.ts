@@ -545,14 +545,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TransactionsCreateNestedManyWithoutTransactionsCategoriesInput = {
   create?: Prisma.XOR<Prisma.TransactionsCreateWithoutTransactionsCategoriesInput, Prisma.TransactionsUncheckedCreateWithoutTransactionsCategoriesInput> | Prisma.TransactionsCreateWithoutTransactionsCategoriesInput[] | Prisma.TransactionsUncheckedCreateWithoutTransactionsCategoriesInput[]
   connectOrCreate?: Prisma.TransactionsCreateOrConnectWithoutTransactionsCategoriesInput | Prisma.TransactionsCreateOrConnectWithoutTransactionsCategoriesInput[]

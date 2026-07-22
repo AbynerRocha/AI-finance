@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export const Route = createFileRoute('/(dashboard)')({
   beforeLoad: async ({ context }) => {
-    if(!context.auth?.isAuthenticated) {
+    if (!context.auth?.isAuthenticated) {
       // Redirect to login page 
       throw redirect({
         to: '/login',
@@ -26,7 +26,7 @@ function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         sidebarOpen={sidebarOpen}
@@ -41,19 +41,16 @@ function RouteComponent() {
         }}
         setSidebarOpen={setSidebarOpen}
       />
-      {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm lg:hidden"
-        />
-      )}
 
-      <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
         <Header
           setSidebarOpen={setSidebarOpen}
         />
-        <Outlet/>
-      </main>
+        <main className="min-w-0 flex-1 overflow-auto mb-28 lg:mb-12">
+          <Outlet />
+        </main>
+      </div>
+
     </div>
   )
 }

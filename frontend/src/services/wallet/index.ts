@@ -20,7 +20,7 @@ export async function getUserWallets() {
     const accessToken = getAccessToken()
 
     try {
-        const response = await api.get<WalletData[]>('/wallet', {
+        const response = await api.get<{ balance: bigint, wallets: WalletData[] }>('/wallet', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

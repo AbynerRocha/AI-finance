@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   Wallet: 'Wallet',
   Transactions: 'Transactions',
+  WalletCategories: 'WalletCategories',
   TransactionsCategories: 'TransactionsCategories',
   RefreshTokens: 'RefreshTokens'
 } as const
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "transactions" | "transactionsCategories" | "refreshTokens"
+    modelProps: "user" | "wallet" | "transactions" | "walletCategories" | "transactionsCategories" | "refreshTokens"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -630,6 +631,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WalletCategories: {
+      payload: Prisma.$WalletCategoriesPayload<ExtArgs>
+      fields: Prisma.WalletCategoriesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WalletCategoriesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WalletCategoriesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        findFirst: {
+          args: Prisma.WalletCategoriesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WalletCategoriesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        findMany: {
+          args: Prisma.WalletCategoriesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>[]
+        }
+        create: {
+          args: Prisma.WalletCategoriesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        createMany: {
+          args: Prisma.WalletCategoriesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WalletCategoriesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>[]
+        }
+        delete: {
+          args: Prisma.WalletCategoriesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        update: {
+          args: Prisma.WalletCategoriesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        deleteMany: {
+          args: Prisma.WalletCategoriesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WalletCategoriesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WalletCategoriesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>[]
+        }
+        upsert: {
+          args: Prisma.WalletCategoriesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletCategoriesPayload>
+        }
+        aggregate: {
+          args: Prisma.WalletCategoriesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWalletCategories>
+        }
+        groupBy: {
+          args: Prisma.WalletCategoriesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletCategoriesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WalletCategoriesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletCategoriesCountAggregateOutputType> | number
+        }
+      }
+    }
     TransactionsCategories: {
       payload: Prisma.$TransactionsCategoriesPayload<ExtArgs>
       fields: Prisma.TransactionsCategoriesFieldRefs
@@ -834,6 +909,7 @@ export const WalletScalarFieldEnum = {
   userId: 'userId',
   name: 'name',
   type: 'type',
+  category: 'category',
   currency: 'currency',
   amountCents: 'amountCents',
   createdAt: 'createdAt'
@@ -856,6 +932,18 @@ export const TransactionsScalarFieldEnum = {
 } as const
 
 export type TransactionsScalarFieldEnum = (typeof TransactionsScalarFieldEnum)[keyof typeof TransactionsScalarFieldEnum]
+
+
+export const WalletCategoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  color: 'color',
+  userId: 'userId'
+} as const
+
+export type WalletCategoriesScalarFieldEnum = (typeof WalletCategoriesScalarFieldEnum)[keyof typeof WalletCategoriesScalarFieldEnum]
 
 
 export const TransactionsCategoriesScalarFieldEnum = {
@@ -955,6 +1043,20 @@ export type ListEnumWalletTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'BigInt'
  */
 export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -986,20 +1088,6 @@ export type ListEnumTransactionTypesFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -1143,6 +1231,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   wallet?: Prisma.WalletOmit
   transactions?: Prisma.TransactionsOmit
+  walletCategories?: Prisma.WalletCategoriesOmit
   transactionsCategories?: Prisma.TransactionsCategoriesOmit
   refreshTokens?: Prisma.RefreshTokensOmit
 }

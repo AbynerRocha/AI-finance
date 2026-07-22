@@ -2,16 +2,21 @@ import type { NextFunction, Response } from "express";
 import type { getAllWalletsRequest } from "../../wallet.routes.js";
 import { prisma } from "../../../lib/prisma/index.js";
 import { AuthError } from "../../../utils/error.js";
+import { getAllUserWallets, getUserBalance } from "../../../controllers/user/index.js";
 
 export async function getAllWalletsRoute(req: getAllWalletsRequest, res: Response, next: NextFunction) {
-    try { 
+    try {
         if (!req.user.userId) {
             throw AuthError.notAuthorized()
         }
 
-        const wallets = await prisma.wallet.findMany({ where: { userId: req.user.userId } })
+        const wallets = await getAllUserWallets(req.user.userId)
+        const userBalance = await getUserBalance(req.user.userId)
 
-        return res.status(200).json(wallets.map((v) => ({...v, amountCents: v.amountCents.toString() })))
+        return res.status(200).json({ 
+            wallets: wallets.map((v) => ({ ...v, amountCents: v.amountCents.toString() })),
+            balance: userBalance.toString()
+        })
     } catch (error) {
         next(error)
     }

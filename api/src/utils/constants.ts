@@ -1,0 +1,6 @@
+/*
+    ARQUIVO PARA DEFINIR AS CONTANTES DO PROJETO
+*/
+
+export const DEFAULT_TTL_CACHE = 10800 // 3hrs
+export const DEFAULT_CURRENCY = "BRL"

@@ -11,6 +11,7 @@
 export type * from './models/User.js'
 export type * from './models/Wallet.js'
 export type * from './models/Transactions.js'
+export type * from './models/WalletCategories.js'
 export type * from './models/TransactionsCategories.js'
 export type * from './models/RefreshTokens.js'
 export type * from './commonInputTypes.js'

@@ -450,18 +450,6 @@ export type TransactionsCategoriesUpdateOneWithoutTransactionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TransactionsCategoriesUpdateToOneWithWhereWithoutTransactionsInput, Prisma.TransactionsCategoriesUpdateWithoutTransactionsInput>, Prisma.TransactionsCategoriesUncheckedUpdateWithoutTransactionsInput>
 }
 
-export type EnumCategoryTypeFieldUpdateOperationsInput = {
-  set?: $Enums.CategoryType
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TransactionsCategoriesCreateWithoutUserInput = {
   name: string
   type: $Enums.CategoryType

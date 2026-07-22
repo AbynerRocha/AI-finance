@@ -20,3 +20,4 @@ api/src/dist
 api/prisma/migrations
 api/.env
 api/.env.dev
+api/tests/vitest.setup.ts

@@ -10,9 +10,13 @@ interface RouterContext {
 
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  validateSearch: (search: { redirect?: string } | undefined) => ({
-    redirect: search?.redirect ? String(search.redirect) : undefined
-  }),
+  validateSearch: (search: Record<string, unknown>) => {
+    const redirect = search.redirect
+
+    return typeof redirect === "string"
+      ? { redirect }
+      : {}
+  },
   component: RootComponent,
   errorComponent: ({ error }) => {
     return JSON.stringify(error)
@@ -23,7 +27,7 @@ function RootComponent() {
   return (
     <>
       <Outlet />
-      <TanStackDevtools
+      {/* <TanStackDevtools
         config={{
           position: 'bottom-right',
         }}
@@ -33,7 +37,7 @@ function RootComponent() {
             render: <TanStackRouterDevtoolsPanel />,
           },
         ]}
-      />
+      /> */}
     </>
   )
 }

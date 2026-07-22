@@ -38,24 +38,27 @@ model User {
   createdAt DateTime? @default(now()) @map("created_at")
   accounts  Wallet[]
 
-  accessLevel   String                   @default("user")
-  refreshTokens RefreshTokens[]
-  categories    TransactionsCategories[]
+  accessLevel      String                   @default("user")
+  refreshTokens    RefreshTokens[]
+  categories       TransactionsCategories[]
+  walletCategories WalletCategories[]
 
   @@index([id])
   @@map("tb_users")
 }
 
 model Wallet {
-  id           String         @id @unique @default(uuid())
-  User         User           @relation(fields: [userId], references: [id])
-  userId       String         @map("account_user_id")
-  name         String
-  type         WalletType
-  currency     String         @default("DOL") @db.Char(3)
-  amountCents  BigInt         @default(0)
-  createdAt    DateTime       @default(now()) @map("created_at")
-  Transactions Transactions[]
+  id               String           @id @unique @default(uuid())
+  User             User             @relation(fields: [userId], references: [id])
+  userId           String           @map("account_user_id")
+  name             String
+  type             WalletType
+  WalletCategories WalletCategories? @relation(fields: [category], references: [id])
+  category         Int?
+  currency         String           @default("DOL") @db.Char(3)
+  amountCents      BigInt           @default(0)
+  createdAt        DateTime         @default(now()) @map("created_at")
+  Transactions     Transactions[]
 
   @@index([id, userId])
   @@map("tb_wallets")
@@ -78,6 +81,21 @@ model Transactions {
 
   @@index([walletId, date])
   @@map("tb_transactions")
+}
+
+model WalletCategories {
+  id    Int          @id @default(autoincrement())
+  name  String
+  type  CategoryType
+  icon  String?
+  color String?
+
+  User    User     @relation(fields: [userId], references: [id])
+  userId  String
+  wallets Wallet[]
+
+  @@index([type, userId])
+  @@map("tb_wallet_categories")
 }
 
 model TransactionsCategories {

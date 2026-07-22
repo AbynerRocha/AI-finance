@@ -1,5 +1,6 @@
-import z from "zod";
+import z, { type TypeOf } from "zod";
 import { AuthError } from "../utils/error.js";
+import { transactionSchema } from "./transaction.schemas.js";
 
 export const createWalletSchema = z.object({
     body: z.object({
@@ -25,6 +26,19 @@ export const getAllWalletsSchema = z.object({
     })
 })
 
+export const walletSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    userId: z.string(),
+    type: z.string(),
+    category: z.optional(z.string()),
+    currency: z.string(),
+    amountCents: z.bigint(),
+    createdAt: z.date(),
+    lastTransaction: z.optional(transactionSchema)
+})
+
+export type WalletData = z.infer<typeof walletSchema>
 export type GetWalletSchema = z.infer<typeof getWalletSchema>
 export type CreateWalletSchema = z.infer<typeof createWalletSchema>
 export type getAllWalletsSchema = z.infer<typeof getAllWalletsSchema>

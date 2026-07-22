@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Wallet: 'Wallet',
   Transactions: 'Transactions',
+  WalletCategories: 'WalletCategories',
   TransactionsCategories: 'TransactionsCategories',
   RefreshTokens: 'RefreshTokens'
 } as const
@@ -91,6 +92,7 @@ export const WalletScalarFieldEnum = {
   userId: 'userId',
   name: 'name',
   type: 'type',
+  category: 'category',
   currency: 'currency',
   amountCents: 'amountCents',
   createdAt: 'createdAt'
@@ -113,6 +115,18 @@ export const TransactionsScalarFieldEnum = {
 } as const
 
 export type TransactionsScalarFieldEnum = (typeof TransactionsScalarFieldEnum)[keyof typeof TransactionsScalarFieldEnum]
+
+
+export const WalletCategoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  icon: 'icon',
+  color: 'color',
+  userId: 'userId'
+} as const
+
+export type WalletCategoriesScalarFieldEnum = (typeof WalletCategoriesScalarFieldEnum)[keyof typeof WalletCategoriesScalarFieldEnum]
 
 
 export const TransactionsCategoriesScalarFieldEnum = {

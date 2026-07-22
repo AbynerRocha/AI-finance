@@ -131,4 +131,18 @@ export class WalletError extends AppError {
             statusCode: 409
         })
     }
+    
+    static invalidAmount() {
+        return new WalletError({
+            message: "Valor inválido",
+            name: "INVALID_AMOUNT",
+            statusCode: 409,
+            issues: [
+                {
+                    target: "value",
+                    message: "Valor inválido"
+                }
+            ]
+        })
+    }
 }

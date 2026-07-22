@@ -57,6 +57,11 @@ export type Wallet = Prisma.WalletModel
  */
 export type Transactions = Prisma.TransactionsModel
 /**
+ * Model WalletCategories
+ * 
+ */
+export type WalletCategories = Prisma.WalletCategoriesModel
+/**
  * Model TransactionsCategories
  * 
  */
