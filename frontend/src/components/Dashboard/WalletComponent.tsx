@@ -1,5 +1,6 @@
 import type { WalletData } from "#/schemas/wallet/index.ts";
 import { formatMoney, toFloat } from "#/utils/formatCurrency.ts";
+import { Link } from "@tanstack/react-router";
 import { MoveRight, PiggyBank } from "lucide-react";
 import type React from "react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
@@ -36,7 +37,7 @@ export default function WalletComponent({ walletData, icon }: WalletComponentPro
           </div>
           <div className="relative bottom-4 h-20 w-full mt-3 lg:mt-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={[{ valor: 1000 }, { valor: 1200 }, { valor: 490 }, { valor: 2000 } ]}>
+              <AreaChart data={[{ valor: 1000 }, { valor: 1200 }, { valor: 490 }, { valor: 2000 }]}>
                 <Area
                   type="linear"
                   dataKey="valor"
@@ -55,12 +56,20 @@ export default function WalletComponent({ walletData, icon }: WalletComponentPro
         <footer className="h-10 w-full mt-5">
           {walletData.lastTransaction && (<>
             <h6 className="text-xs text-secondary-foreground/90">Última transação</h6>
-          <p className="text-sm text-foreground/90">{formatMoney(walletData.lastTransaction?.amountCents)}</p>
+            <p className="text-sm text-foreground/90">{formatMoney(walletData.lastTransaction?.amountCents)}</p>
           </>)}
         </footer>
       </div>
       <span className="text-primary w-fit h-fit ">
-        <a className="mt-6 ml-6 text-sm flex flex-row items-center gap-3">Ver detalhes <MoveRight size={20} /></a>
+        <Link
+          className="mt-6 ml-6 text-sm flex flex-row items-center gap-3"
+          to="/wallet/$walletId"
+          params={{ 
+            walletId: walletData.id
+          }}
+        >
+          Ver detalhes <MoveRight size={20} />
+        </Link>
       </span>
     </article>
   )

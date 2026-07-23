@@ -1,6 +1,18 @@
 import z, { type TypeOf } from "zod";
-import { AuthError } from "../utils/error.js";
+import { AuthError, WalletError } from "../utils/error.js";
 import { transactionSchema } from "./transaction.schemas.js";
+
+export const walletSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    userId: z.string(),
+    type: z.string(),
+    category: z.optional(z.string()),
+    currency: z.string(),
+    amountCents: z.bigint(),
+    createdAt: z.date(),
+    lastTransaction: z.optional(transactionSchema)
+})
 
 export const createWalletSchema = z.object({
     body: z.object({
@@ -26,19 +38,20 @@ export const getAllWalletsSchema = z.object({
     })
 })
 
-export const walletSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    userId: z.string(),
-    type: z.string(),
-    category: z.optional(z.string()),
-    currency: z.string(),
-    amountCents: z.bigint(),
-    createdAt: z.date(),
-    lastTransaction: z.optional(transactionSchema)
+export const balanceSchema = z.object({
+    params: z.object({
+        walletId: z.string()
+    }),
+    body: z.object({
+        amount: z.coerce.bigint().min(1n, WalletError.invalidAmount().message)
+    }),
+    headers: z.looseObject({
+        authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)
+    })
 })
 
 export type WalletData = z.infer<typeof walletSchema>
+export type BalanceSchema = z.infer<typeof balanceSchema>
 export type GetWalletSchema = z.infer<typeof getWalletSchema>
 export type CreateWalletSchema = z.infer<typeof createWalletSchema>
 export type getAllWalletsSchema = z.infer<typeof getAllWalletsSchema>

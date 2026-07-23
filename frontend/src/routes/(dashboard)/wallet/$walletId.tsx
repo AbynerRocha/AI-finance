@@ -3,7 +3,6 @@ import { formatMoney } from '#/utils/formatCurrency.ts';
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { AxiosError } from 'axios';
 import { ArrowUp, Minus, MoveDown, MoveRight, MoveUp, Plus, Wallet2 } from 'lucide-react';
-import { div } from 'motion/react-client';
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 export const Route = createFileRoute('/(dashboard)/wallet/$walletId')({
@@ -57,9 +56,9 @@ function RouteComponent() {
                   <Wallet2 />
                 </span>
                 <span className="space-y-1">
-                  <h4 className="font-bold text-lg">Reserva de Emergência</h4>
+                  <h4 className="font-bold text-lg">{wallet.name}</h4>
                   <span className="flex justify-center items-center min-w-20 w-fit max-w-36 bg-border text-xs font-medium py-1.5 px-2.5 rounded-full text-primary overflow-hidden">
-                    <p>Segurança</p>
+                    <p>{wallet.category ?? "Conta"}</p>
                   </span>
                 </span>
               </div>
@@ -70,7 +69,7 @@ function RouteComponent() {
           </div>
           <div className="flex flex-row items-end gap-2 mt-5">
             <h4 className="text-card-foreground text-4xl font-bold">
-              R$ 24.534,00
+              {formatMoney(wallet.amountCents)}
             </h4>
             <span className="bg-secondary py-1 px-4 rounded-full flex items-center w-36">
               <span className="flex flex-row items-center text-primary gap-1">

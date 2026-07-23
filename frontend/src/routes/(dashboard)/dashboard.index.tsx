@@ -208,27 +208,12 @@ function Dashboard() {
       </h5>
       <h6 className="text-secondary-foreground/80 text-sm">Acompanhe seus saldos e suas metas</h6>
       <section className="grid lg:grid-cols-3 grid-rows-1 mt-7 place-items-center space-y-5 md:grid-cols-2 grid-cols-1 md:gap-10">
-        <WalletComponent
-          walletData={{
-            name: "Conta",
-            amountCents: BigInt(100000),
-            createdAt: new Date(),
-            currency: "BRL",
-            id: "12341234",
-            type: "MAIN",
-            category: "Corrente",
-            userId: auth?.user?.id || "dsadhajdajkdha",
-            lastTransaction: {
-              walletId: "12341234",
-              amountCents: BigInt(3050),
-              category: "Compra",
-              date: new Date(),
-              isPaid: true,
-              type: "dsadasd",
-              id: "compra-123",
-            }
-          }}
-        />
+        {data?.wallets?.map((wallet) => {
+          return <WalletComponent
+            walletData={wallet}
+          />
+        })}
+
         {/* <article className="min-h-82 w-96">
           <div className="flex flex-col flex-1 bg-card border border-border  rounded-xl p-6 shadow-md/20">
             <header className="flex flex-row items-center justify-between">

@@ -6,11 +6,11 @@ export const walletSchema = z.object({
     name: z.string(),
     type: z.string(),
     userId: z.string(),
-    category: z.string(),
+    category: z.nullable(z.string()),
     currency: z.string(),
     createdAt: z.coerce.date(),
     amountCents: z.coerce.bigint(),
-    lastTransaction: transactionSchema
+    lastTransaction: z.nullable(transactionSchema)
 })
 
 export const getAllUserWalletsSchema = z.object({

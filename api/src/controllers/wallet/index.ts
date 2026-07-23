@@ -4,6 +4,7 @@ import { WalletError } from "../../utils/error.js";
 import type { WalletData } from "../../schemas/wallet.schemas.js";
 import { walletQueryIncludeLastTransaction } from "./queries.js";
 import { DEFAULT_CURRENCY, DEFAULT_TTL_CACHE } from "../../utils/constants.js";
+import { Prisma } from "../../generated/prisma/client.js";
 
 
 const serializeLastTransaction = (lastTransaction?: WalletData['lastTransaction']) =>
@@ -13,12 +14,27 @@ const serializeLastTransaction = (lastTransaction?: WalletData['lastTransaction'
         )
         : ''
 
+export const treatWalletData = (wallet: any, amountToString: boolean = false): WalletData => ({
+    ...wallet,
+    amountCents: amountToString ? wallet.amountCents.toString() : wallet.amountCents,
+    category: wallet.WalletCategories?.name ?? null,
+    lastTransaction: wallet.Transactions.length > 0 ? {
+        ...wallet.Transactions[0],
+        category: wallet.Transactions[0]!.transactionsCategories?.name,
+        transactionsCategories: undefined
+    } : null,
+    WalletCategories: undefined,
+    Transactions: undefined
+})
+
 export class Wallet {
     private readonly walletId: string;
     private balance: bigint | undefined;
 
     constructor({ walletId }: { walletId: string }) {
         this.walletId = walletId
+
+
     }
 
     static async createWallet({ name, userId }: { name: string, userId: string }) {
@@ -28,22 +44,15 @@ export class Wallet {
                     name,
                     type: "MAIN",
                     userId,
-                    category: null 
+                    currency: DEFAULT_CURRENCY,
+                    category: null
                 },
                 include: walletQueryIncludeLastTransaction
             })
 
-            const treatedWalletData = {
-                ...wallet,
-                category: wallet.WalletCategories?.name ?? null,
-                lastTransaction: {
-                    ...wallet.Transactions[0],
-                    category: wallet.Transactions[0]?.transactionsCategories?.name ?? '',
-                },
-                WalletCategories: undefined
-            }
+            const treatedWalletData = treatWalletData(wallet)
 
-            await Wallet.saveWalletInCache(treatedWalletData as WalletData)
+            await Wallet.saveWalletInCache(treatedWalletData)
 
             return new Wallet({ walletId: wallet.id })
         } catch (error) {
@@ -69,17 +78,9 @@ export class Wallet {
             throw WalletError.walletNotFound()
         }
 
-        const treatedWalletData = {
-            ...wallet,
-            category: wallet.WalletCategories?.name ?? null,
-            lastTransaction: {
-                ...wallet.Transactions[0],
-                category: wallet.Transactions[0]?.transactionsCategories?.name ?? '',
-            },
-            WalletCategories: undefined
-        }
+        const treatedWalletData = treatWalletData(wallet)
 
-        Wallet.saveWalletInCache(treatedWalletData as WalletData)
+        Wallet.saveWalletInCache(treatedWalletData)
 
         return treatedWalletData
     }
@@ -106,7 +107,7 @@ export class Wallet {
         return this.balance
     }
 
-    async addBalance(amount: bigint) {
+    async changeBalance(amount: bigint) {
         try {
             if (amount <= 0n) {
                 throw WalletError.invalidAmount()
@@ -142,36 +143,11 @@ export class Wallet {
 
             return !!success
         } catch (error) {
-            throw error
-        }
-    }
-
-    async removeBalance(amount: bigint) {
-        try {
-            if (amount <= 0n) {
-                throw WalletError.invalidAmount()
+            if (error instanceof Prisma.PrismaClientKnownRequestError
+                && error.code === "P2025"
+            ) {
+                throw WalletError.walletNotFound()
             }
-
-            const success = await prisma.wallet.updateMany({
-                where: {
-                    id: this.walletId,
-                    amountCents: {
-                        gte: amount
-                    }
-                },
-                data: {
-                    amountCents: {
-                        decrement: amount
-                    }
-                }
-            })
-
-            if (success.count === 0) {
-                return false
-            }
-
-            return true
-        } catch (error) {
             throw error
         }
     }
@@ -197,7 +173,6 @@ export class Wallet {
             lastTransaction = undefined
             return null
         }
-
 
         return {
             id: cachedWallet.id,
@@ -258,5 +233,7 @@ export class Wallet {
         ]))
         await redisClient.expire(cacheKey, DEFAULT_TTL_CACHE)
     }
+
+
 }
 

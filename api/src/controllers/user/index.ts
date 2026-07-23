@@ -1,11 +1,11 @@
 import argon2 from "argon2";
 import { prisma } from "../../lib/prisma/index.js";
 import { redisClient } from "../../lib/redis/index.js";
-import { UserError } from "../../utils/error.js";
+import { AppError, UserError } from "../../utils/error.js";
 import { hashPassword } from "../auth/index.js";
 import type { CreateUserSchemaType } from "../../schemas/user.schemas.js";
 import { Prisma, type Transactions, type User } from "../../generated/prisma/client.js";
-import { Wallet } from "../wallet/index.js";
+import { treatWalletData, Wallet } from "../wallet/index.js";
 import type { WalletData } from "../../schemas/wallet.schemas.js";
 import { walletFullInclude, walletQueryIncludeLastTransaction } from "../wallet/queries.js";
 import { DEFAULT_TTL_CACHE } from "../../utils/constants.js";
@@ -140,7 +140,11 @@ export async function getAllUserWallets(id: string) {
         const cachedWallets = await redisClient.get(cacheKey)
 
         if (cachedWallets) {
-            return JSON.parse(cachedWallets) as WalletData[]
+            const data = JSON.parse(cachedWallets) as WalletData[]
+
+            if (data.length > 0) {
+                return data
+            }
         }
 
         let wallets = await prisma.wallet.findMany({
@@ -150,20 +154,11 @@ export async function getAllUserWallets(id: string) {
             include: walletQueryIncludeLastTransaction
         })
 
-        const result = wallets.map((wallet) => ({
-            ...wallet,
-            category: wallet.WalletCategories.name,
-            WalletCategories: undefined,
-            lastTransaction: { 
-                ...wallet.Transactions[0], 
-                category: wallet.Transactions[0]?.transactionsCategories?.name, 
-                transactionsCategories: undefined 
-            }
-        }))
+        const treatedWalletData = wallets.map((wallet) => treatWalletData(wallet, true))
 
-        await redisClient.set(cacheKey, JSON.stringify(result), { expiration: { type: "EX", value: DEFAULT_TTL_CACHE } })
+        await redisClient.set(cacheKey, JSON.stringify(treatedWalletData), { expiration: { type: "EX", value: DEFAULT_TTL_CACHE } })
 
-        return result
+        return treatedWalletData
     } catch (error) {
         throw error
     }
@@ -179,16 +174,26 @@ export async function getUserBalance(id: string) {
             return BigInt(balanceCached)
         }
 
-        let balance = BigInt(0)
-        const wallets = await getAllUserWallets(id)
+        const { _sum: { amountCents } } = await prisma.wallet.aggregate({
+            where: {
+                userId: id
+            },
+            _sum: {
+                amountCents: true
+            }
+        })
 
-        for (const wallet of wallets) {
-            balance = balance + wallet.amountCents
+        if(!amountCents) {
+            throw new AppError({
+                message: "Não foi possível consultar o seu saldo. Por favor tente novamente mais tarde.",
+                name: "CANNOT_GET_BALANCE",
+                statusCode: 500
+            })
         }
 
-        redisClient.set(cacheKey, balance.toString())
+        redisClient.set(cacheKey, amountCents.toString())
 
-        return balance
+        return amountCents
     } catch (error) {
         throw error
     }

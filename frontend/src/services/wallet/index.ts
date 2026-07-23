@@ -25,6 +25,8 @@ export async function getUserWallets() {
                 Authorization: `Bearer ${accessToken}`
             }
         }) 
+        
+        console.log(response.data)
 
         return getAllUserWalletsSchema.parse(response.data)
     } catch (error) {   
@@ -47,3 +49,8 @@ export async function getUserWallet(walletId: string) {
        throw error
     }
 }
+
+export async function changeWalletBalance(walletId: string, amount: bigint) {
+    
+}
+ 
