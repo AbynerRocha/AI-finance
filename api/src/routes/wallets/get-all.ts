@@ -11,6 +11,7 @@ registerRoute({
     tags: ['🐖 wallet'],
     method: "get",
     path: "/wallet",
+    description: "Get all user's wallets",
     request: {
         headers: getAllWalletsSchema.shape.headers
     },

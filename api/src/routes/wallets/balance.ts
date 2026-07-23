@@ -9,6 +9,7 @@ registerRoute({
     tags: ['🐖 wallet'],
     method: "patch",
     path: "/wallet/{walletid}/balance",
+    description: "Update wallet balance",
     request: {
         body: {
             content: {

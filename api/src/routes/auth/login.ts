@@ -12,6 +12,7 @@ registerRoute({
     tags: ['🔒 auth'],
     path: "/auth/login",
     method: "post",
+    description: "Make user login",
     request: {
         body: {
             content: {

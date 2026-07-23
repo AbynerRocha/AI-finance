@@ -10,6 +10,7 @@ import { registerRoute } from "../../docs/helper.js";
 registerRoute({
     tags: ['🔒 auth'],
     path: "/auth/refresh",
+    description: "Revalidate user session",
     method: "post",
     request: {
         cookies: refreshSchema.shape.cookies

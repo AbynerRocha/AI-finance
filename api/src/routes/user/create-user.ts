@@ -4,11 +4,13 @@ import { createUser } from "../../controllers/user/index.js";
 import { createUserSchema, getUserSchema, userSchema } from "../../schemas/user.schemas.js";
 import { defaultErrorSchema } from "../../schemas/errors.schemas.js";
 import { registerRoute } from "../../docs/helper.js";
+import { AuthError } from "../../utils/error.js";
 
 registerRoute({
     tags: ['👤 user'],
     method: "post",
     path: "/user/create",
+    description: "Create a new user (only for admins)",
     request: {
         body: {
             content: {
@@ -35,6 +37,10 @@ registerRoute({
 
 export async function createUserRoute(req: CreateUserRequest, res: Response, next: NextFunction) {
     try {
+        if(req.user.accessLevel !== 'admin') {
+            throw AuthError.notAuthorized()
+        }
+
         const { name, email, password } = req.body
     
         await createUser({ name, email, password })

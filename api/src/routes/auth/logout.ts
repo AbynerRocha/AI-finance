@@ -8,6 +8,7 @@ registerRoute({
     tags: ['🔒 auth'],
     path: "/auth/logout",
     method: "post",
+    description: "Make user logout",
     request: {
         cookies: logoutSchema.shape.cookies
     },

@@ -13,6 +13,7 @@ registerRoute({
     tags: ['🔒 auth'],
     path: "/auth/register",
     method: "post",
+    description: "Register new user",
     request: {
         body: {
             content: {

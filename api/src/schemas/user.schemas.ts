@@ -18,6 +18,10 @@ export const createUserSchema = z.object({
     }),
     headers: z.looseObject({
         authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 
@@ -26,9 +30,11 @@ export const getUserSchema = z.object({
         id: z.string()
     }),
     headers: z.looseObject({
-        authorization: z.string("Não autorizado para esta ação.")
-        
-        .startsWith("Bearer ", AuthError.notAuthorized().message)
+        authorization: z.string("Não autorizado para esta ação.").startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 

@@ -20,6 +20,10 @@ export const createWalletSchema = z.object({
     }),
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 
@@ -29,12 +33,20 @@ export const getWalletSchema = z.object({
     }),
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 
 export const getAllWalletsSchema = z.object({
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 
@@ -47,6 +59,10 @@ export const balanceSchema = z.object({
     }),
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)
+        .openapi({
+            example: "Bearer token",
+            description: "Access token"
+        })
     })
 })
 

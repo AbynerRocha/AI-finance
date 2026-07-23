@@ -9,6 +9,7 @@ registerRoute({
     tags: ['🐖 wallet'],
     method: "get",
     path: "/wallet/{walletId}",
+    description: "Get wallet's data",
     request: {
         params: getWalletSchema.shape.params,
         headers: getWalletSchema.shape.headers

@@ -1,5 +1,6 @@
 import z from 'zod'
 import { AuthError } from '../utils/error.js';
+import { cookieRefreshToken } from '../utils/cookies.js';
 
 export const loginSchema = z.object({
     body: z.object({
@@ -19,12 +20,20 @@ export const registerSchema = z.object({
 export const logoutSchema = z.object({
     cookies: z.object({
         finance_refresh_token: z.string()
+        .openapi({
+            example: cookieRefreshToken.name+"=token",
+            description: "Refresh token"
+        })
     })
 })
 
 export const refreshSchema = z.object({
     cookies: z.object({
         finance_refresh_token: z.string()
+        .openapi({
+            example: cookieRefreshToken.name+"=token",
+            description: "Refresh token"
+        })
     })
 })
 

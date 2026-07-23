@@ -10,6 +10,7 @@ registerRoute({
     tags: ['🐖 wallet'],
     method: "post",
     path: "/wallet",
+    description: "Create a new wallet",
     request: {
         body: {
             content: {

@@ -152,6 +152,16 @@ export class Wallet {
         }
     }
 
+    async exists() {
+        const walletExists = await prisma.wallet.count({
+            where: {
+                id: this.walletId
+            }
+        })
+
+        return !!walletExists
+    }
+
     static async isWalletInCache(walletId: string): Promise<WalletData | null> {
         const cachedWallet = await redisClient.hGetAll(`wallet:${walletId}`)
 
@@ -233,7 +243,5 @@ export class Wallet {
         ]))
         await redisClient.expire(cacheKey, DEFAULT_TTL_CACHE)
     }
-
-
 }
 
