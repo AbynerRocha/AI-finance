@@ -1,7 +1,20 @@
 import type { NextFunction, Request, Response } from "express";
 import { cookieRefreshToken } from "../../utils/cookies.js";
 import { revokeRefreshToken } from "../../controllers/auth/token/index.js";
+import { logoutSchema } from "../../schemas/auth.schemas.js";
+import { registerRoute } from "../../docs/helper.js";
 
+registerRoute({
+    tags: ['🔒 auth'],
+    path: "/auth/logout",
+    method: "post",
+    request: {
+        cookies: logoutSchema.shape.cookies
+    },
+    responses: {
+        200: {}
+    }
+})
 
 export async function logoutRoute(req: Request, res: Response, next: NextFunction) {
     try {

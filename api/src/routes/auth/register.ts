@@ -4,6 +4,44 @@ import { createUser } from "../../controllers/user/index.js";
 import { generateAccessToken, generateRefreshToken } from "../../controllers/auth/token/index.js";
 import { cookieRefreshToken } from "../../utils/cookies.js";
 import type { AccessLevel } from "../../@types/access-level.js";
+import { defaultErrorSchema } from "../../schemas/errors.schemas.js";
+import { registerSchema } from "../../schemas/auth.schemas.js";
+import { z } from "zod";
+import { registerRoute } from "../../docs/helper.js";
+
+registerRoute({
+    tags: ['🔒 auth'],
+    path: "/auth/register",
+    method: "post",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: registerSchema.shape.body
+                }
+            }
+        }
+    },
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    schema: z.string().openapi({
+                        description: "Acess token"
+                    })
+                }
+            }
+        },
+        409: {
+            content: {
+                "application/json": {
+                    schema: defaultErrorSchema
+                }
+            }
+        }
+    }
+})
+
 
 export async function registerUserRoute(req: RegisterUserRequest, res: Response, next: NextFunction) {
     const { name, email, password } = req.body

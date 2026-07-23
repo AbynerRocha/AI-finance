@@ -2,7 +2,9 @@ import { Router, type Request } from "express";
 import { getUserRoute } from "./user/get-user.js";
 import { createUserRoute } from "./user/create-user.js";
 import { validate } from "../middleware/validate.middleware.js";
-import { createUserSchema, getUserSchema, type CreateUserSchemaType, type GetUserSchemaType } from "../schemas/user.schemas.js";
+import { createUserSchema, getUserSchema, userSchema, type CreateUserSchemaType, type GetUserSchemaType } from "../schemas/user.schemas.js";
+import { registry } from "../docs/docs.js";
+import { z } from 'zod'
 
 const router = Router()
 

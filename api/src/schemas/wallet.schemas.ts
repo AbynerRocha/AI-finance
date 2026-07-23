@@ -25,7 +25,7 @@ export const createWalletSchema = z.object({
 
 export const getWalletSchema = z.object({
     params: z.object({
-        walletId: z.string()
+        walletId: z.uuid()
     }),
     headers: z.looseObject({
         authorization: z.string().startsWith("Bearer ", AuthError.notAuthorized().message)

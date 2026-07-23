@@ -3,15 +3,15 @@ import userRoutes from './user.routes.js'
 import authRoutes from './auth.routes.js'
 import walletRoutes from './wallet.routes.js'
 import { generateAccessToken, getDataFromToken } from "../controllers/auth/token/index.js";
+import { registry } from "../docs/docs.js";
+import { validationErrorSchema } from "../schemas/errors.schemas.js";
 
 const router = Router()
 
-router.get('/', async (req, res) => {
-    const token = await generateAccessToken("7bd9410f-41db-4780-b4a7-3aa2a286bd08", 'user')
 
-    return res.status(200).json({
-        token, 
-    })
+
+router.get('/', async (req, res) => {
+   return res.status(200).send()
 })
 
 router.use('/user', userRoutes)

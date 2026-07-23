@@ -1,10 +1,10 @@
 import { Router, type Request } from "express";
 import { validate } from "../middleware/validate.middleware.js";
 import { balanceSchema, createWalletSchema, getAllWalletsSchema, getWalletSchema, type BalanceSchema, type CreateWalletSchema, type GetWalletSchema } from "../schemas/wallet.schemas.js";
-import { createWalletRoute } from "./user/wallets/create.js";
-import { getAllWalletsRoute } from "./user/wallets/get-all.js";
-import { getWalletRoute } from "./user/wallets/get.js";
-import { changeBalanceRoute } from "./user/wallets/balance.js";
+import { createWalletRoute } from "./wallets/create.js";
+import { getAllWalletsRoute } from "./wallets/get-all.js";
+import { getWalletRoute } from "./wallets/get.js";
+import { changeBalanceRoute } from "./wallets/balance.js";
 
 const router = Router()
 
